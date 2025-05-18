@@ -52,7 +52,6 @@ export const login = asyncHandler(async (req, res, next) => {
     payload: { id: user.id, role: user.role },
     expiresIn: 30 * 60 * 24 * 365,
   });
-
   user.status = "online";
   await user.save();
   return res.status(201).json({ message: "Done", accessToken, refreshToken });
