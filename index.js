@@ -4,6 +4,7 @@ import path from "path";
 import "mysql2";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+
 import sequelize from "./DataBase/connection.js";
 //set directory dirname
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
