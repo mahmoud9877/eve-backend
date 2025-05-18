@@ -6,7 +6,7 @@ import { globalErrorHandling } from "./utils/errorHandling.js";
 
 const initApp = (app, express) => {
   const corsOptions = {
-    origin: "https://eve-employee.vercel.app",
+    origin: ["https://eve-employee.vercel.app", "http://localhost:3000"],
     credentials: true,
   };
 
