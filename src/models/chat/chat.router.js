@@ -4,6 +4,6 @@ import { validation } from "../../middleware/validation.js";
 import { auth, roles } from "../../middleware/auth.js";
 const router = Router();
 
-router.post("/", auth(roles.User), chatController.createChat);
+router.post("/", chatController.createChat);
 
 export default router;
