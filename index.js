@@ -1,6 +1,7 @@
 import express from "express";
 import initApp from "./src/app.router.js";
 import path from "path";
+import "mysql2";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import sequelize from "./DataBase/connection.js";
