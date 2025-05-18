@@ -1,9 +1,6 @@
 import User from "../../../../DataBase/model/User.model.js";
 import { asyncHandler } from "../../../utils/errorHandling.js";
-import {
-  generateToken,
-  verifyToken,
-} from "../../../utils/GenerateAndVerifyToken.js";
+import { generateToken } from "../../../utils/GenerateAndVerifyToken.js";
 import { hash, compare } from "../../../utils/HashAndCompare.js";
 
 export const signup = asyncHandler(async (req, res, next) => {
@@ -30,23 +27,33 @@ export const signup = asyncHandler(async (req, res, next) => {
 
 export const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-  const user = await userModel.findOne({ email: email.toLowerCase() });
+
+  const user = await User.findOne({ where: { email: email.toLowerCase() } });
   if (!user) {
-    return next(new Error("Email Not found", { cause: 404 }));
+    const error = new Error("Email not found");
+    error.statusCode = 404;
+    return next(error);
   }
-  if (!compare({ plaintext: password, hashValue: user.password })) {
-    return next(new Error("In-Valid Login", { cause: 404 }));
+
+  const isMatch = await compare({
+    plaintext: password,
+    hashValue: user.password,
+  });
+  if (!isMatch) {
+    const error = new Error("Invalid login credentials");
+    error.statusCode = 401;
+    return next(error);
   }
   const access_token = generateToken({
-    payload: { id: user._id, role: user.role },
+    payload: { id: user.id, role: user.role },
     expiresIn: 30 * 60,
   });
-
   const refresh_token = generateToken({
-    payload: { id: user._id, role: user.role },
+    payload: { id: user.id, role: user.role },
     expiresIn: 30 * 60 * 24 * 365,
   });
+
   user.status = "online";
-  user.save();
+  await user.save();
   return res.status(201).json({ message: "Done", access_token, refresh_token });
 });

@@ -23,31 +23,18 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    gender: {
-      type: DataTypes.ENUM("male", "female"),
-      defaultValue: "male",
-    },
-    role: {
-      type: DataTypes.ENUM("User", "Admin"),
-      defaultValue: "User",
-    },
     photoUrl: {
       type: DataTypes.STRING,
       defaultValue: "https://placehold.co/200x200?text=User&font=roboto",
     },
-    changePasswordTime: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
-    status: {
-      type: DataTypes.ENUM("online", "away", "busy", "in meeting"),
-      defaultValue: "online",
+    role: {
+      type: DataTypes.ENUM("Admin", "User"),
+      defaultValue: "User",
     },
   },
   {
     timestamps: true,
   }
 );
-
 
 export default User;

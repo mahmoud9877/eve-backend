@@ -1,14 +1,5 @@
 import joi from "joi";
-import { Types } from "mongoose";
 
-// Custom validator for MongoDB ObjectId
-const validateObjectId = (value, helper) => {
-  return Types.ObjectId.isValid(value)
-    ? true
-    : helper.message("Invalid ObjectId");
-};
-
-// General field definitions using Joi
 export const generalFields = {
   email: joi
     .string()
@@ -22,7 +13,7 @@ export const generalFields = {
     .string()
     .pattern(new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/))
     .required(),
-  id: joi.string().custom(validateObjectId).required(),
+  id: joi.number().integer().positive().required(),
   file: joi.object({
     size: joi.number().positive().required(),
     path: joi.string().required(),
