@@ -7,6 +7,9 @@ import { globalErrorHandling } from "./utils/errorHandling.js";
 const initApp = (app, express) => {
   app.use(cors());
   app.use(express.json({}));
+  app.get("/", (req, res) => {
+    res.send("🎉 API is working!");
+  });
   app.use(`/auth`, authRouter);
   app.use(`/eve-employee`, eveEmployeeRouter);
   app.use(`/chat`, chatRouter);

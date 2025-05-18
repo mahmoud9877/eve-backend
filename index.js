@@ -12,9 +12,6 @@ const PORT = 5000;
 
 await sequelize.sync({ alter: true });
 
-app.get("/", (req, res) => {
-  res.send("🎉 API is working!");
-});
 
 initApp(app, express);
 app.listen(PORT, () => {
