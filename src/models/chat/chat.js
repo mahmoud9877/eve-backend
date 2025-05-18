@@ -29,7 +29,7 @@ export const createChat = async (req, res) => {
 
   try {
     const chatResponse = await chat(message);
-    res.send(chatResponse);
+    res.json({ response: chatResponse });
   } catch (error) {
     console.error("Error in createChat:", error);
     res.status(500).json({ error: "حدث خطأ في إنشاء الدردشة." });
