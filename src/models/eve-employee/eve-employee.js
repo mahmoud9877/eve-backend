@@ -16,7 +16,7 @@ export const createEveEmployee = asyncHandler(async (req, res) => {
     gender,
     introduction,
     photoUrl,
-    createdBy: req.user._id, // assuming you're using auth middleware
+    // createdBy: req.user._id, // assuming you're using auth middleware
   });
   return res.status(201).json({ message: "Done", EveEmployee });
 });

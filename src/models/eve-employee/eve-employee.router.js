@@ -8,13 +8,13 @@ const router = Router();
 
 router.get(
   "/all-eve-employee",
-  auth(roles.User),
+  // auth(roles.User),
   eveEmployeeController.getAllEveEmployee
 );
 
 router.post(
   "/",
-  auth(roles.User),
+  // auth(roles.User),
   upload.single("photoUrl"),
   // validation(validators.createEveEmployee),
   eveEmployeeController.createEveEmployee
