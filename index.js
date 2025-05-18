@@ -10,8 +10,7 @@ dotenv.config({ path: path.join(__dirname, "./config/.env") });
 const app = express();
 const PORT = 5000;
 
-await sequelize.sync({ alter: true });
-
+await sequelize.sync();
 
 initApp(app, express);
 app.listen(PORT, () => {
