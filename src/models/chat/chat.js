@@ -1,41 +1,24 @@
-import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
-import axios from "axios";
+import OpenAI from "openai";
+const { token } = process.env.OPENAI_API_KEY;
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: path.join(__dirname, "../../../config/.env") });
+async function chat(message) {
+  const client = new OpenAI({
+    baseURL: "https://models.github.ai/inference",
+    apiKey: token,
+  });
 
-const apiKey = process.env.OPENAI_API_KEY;
-console.log(apiKey);
+  const response = await client.chat.completions.create({
+    messages: [
+      { role: "system", content: "" },
+      { role: "user", content: message },
+    ],
+    model: "openai/gpt-4o",
+    temperature: 1,
+    max_tokens: 4096,
+    top_p: 1,
+  });
 
-async function chat(userMessage) {
-  try {
-    const response = await axios.post(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "user",
-            content: userMessage,
-          },
-        ],
-        max_tokens: 100,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    return response.data.choices[0].message.content.trim();
-  } catch (error) {
-    console.error("Error:", error.response?.data || error.message);
-    return "حدث خطأ أثناء الاتصال بـ OpenAI.";
-  }
+  return response.choices[0].message.content;
 }
 
 export const createChat = async (req, res) => {

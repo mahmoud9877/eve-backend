@@ -34,7 +34,6 @@ export const login = asyncHandler(async (req, res, next) => {
     error.statusCode = 404;
     return next(error);
   }
-
   const isMatch = await compare({
     plaintext: password,
     hashValue: user.password,
