@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-const { token } = process.env.OPENAI_API_KEY;
+const token = process.env.OPENAI_API_KEY;
 
 async function chat(message) {
   const client = new OpenAI({
