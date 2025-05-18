@@ -12,7 +12,6 @@ const initApp = (app, express) => {
 
   app.use(cors(corsOptions));
 
-  // السماح لجميع طلبات OPTIONS بالرد بشكل صحيح (preflight)
   app.options("*", cors(corsOptions));
 
   app.use(express.json());

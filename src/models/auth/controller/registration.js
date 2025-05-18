@@ -44,16 +44,16 @@ export const login = asyncHandler(async (req, res, next) => {
     error.statusCode = 401;
     return next(error);
   }
-  const access_token = generateToken({
+  const accessToken = generateToken({
     payload: { id: user.id, role: user.role },
     expiresIn: 30 * 60,
   });
-  const refresh_token = generateToken({
+  const refreshToken = generateToken({
     payload: { id: user.id, role: user.role },
     expiresIn: 30 * 60 * 24 * 365,
   });
 
   user.status = "online";
   await user.save();
-  return res.status(201).json({ message: "Done", access_token, refresh_token });
+  return res.status(201).json({ message: "Done", accessToken, refreshToken });
 });
