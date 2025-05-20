@@ -6,4 +6,6 @@ const router = Router();
 
 router.post("/", chatController.createChat);
 
+router.post("/", auth(roles.User), chatController.createChat);
+
 export default router;

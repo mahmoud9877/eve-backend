@@ -42,7 +42,6 @@ const Employee = sequelize.define(
       ),
       allowNull: false,
     },
-
     gender: {
       type: DataTypes.ENUM("male", "female"),
       defaultValue: "male",
@@ -54,6 +53,15 @@ const Employee = sequelize.define(
     status: {
       type: DataTypes.ENUM("online", "away", "busy", "in meeting"),
       defaultValue: "online",
+    },
+    createdBy: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: "Users",
+        key: "id",
+      },
+      onDelete: "CASCADE",
     },
   },
   {

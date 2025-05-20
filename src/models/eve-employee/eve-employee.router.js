@@ -13,7 +13,7 @@ router.get(
 );
 
 router.post(
-  "/",
+  "/:userId",
   // auth(roles.User),
   upload.single("photoUrl"),
   // validation(validators.createEveEmployee),

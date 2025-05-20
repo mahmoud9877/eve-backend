@@ -1,4 +1,5 @@
 import eveEmployeeModel from "../../../DataBase/model/Employee.model.js";
+import User from "../../../DataBase/model/User.model.js";
 import { asyncHandler } from "../../utils/errorHandling.js";
 
 export const getAllEveEmployee = asyncHandler(async (req, res) => {
@@ -7,6 +8,13 @@ export const getAllEveEmployee = asyncHandler(async (req, res) => {
 });
 
 export const createEveEmployee = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const checkUser = await User.findOne({ where: { id: userId } });
+  if (!checkUser) {
+    const error = new Error("User not found");
+    error.statusCode = 404;
+    return next(error);
+  }
   const { name, department, gender, introduction, photoUrl } = req.body;
 
   console.log({ name, department, gender, introduction, photoUrl });
@@ -16,7 +24,7 @@ export const createEveEmployee = asyncHandler(async (req, res) => {
     gender,
     introduction,
     photoUrl,
-    // createdBy: req.user._id, // assuming you're using auth middleware
+    createdBy: userId, // assuming you're using auth middleware
   });
   return res.status(201).json({ message: "Done", EveEmployee });
 });
