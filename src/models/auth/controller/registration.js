@@ -55,5 +55,5 @@ export const login = asyncHandler(async (req, res, next) => {
   await user.save();
   return res
     .status(201)
-    .json({ message: "Done", accessToken, refreshToken, user });
+    .json({ message: "Done", accessToken, user });
 });
