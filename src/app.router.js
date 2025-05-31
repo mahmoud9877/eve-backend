@@ -16,7 +16,7 @@ const initApp = (app, express) => {
   app.use(express.json());
 
   app.get("/", (req, res) => {
-    res.send("🎉 API is working!");
+    res.send("🎉 API issssssssssssssssssssss working!");
   });
 
   app.use(`/auth`, authRouter);
