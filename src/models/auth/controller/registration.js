@@ -11,14 +11,11 @@ export const signup = asyncHandler(async (req, res, next) => {
     error.statusCode = 409;
     return next(error);
   }
-  // Ensure the password is hashed
   const hashPassword = await hash({ plaintext: password });
-  // Create the user in the database
   const user = await User.create({
     email,
     password: hashPassword,
   });
-
   return res.status(201).json({
     message: "Signup successful",
     userId: user._id,
@@ -27,8 +24,8 @@ export const signup = asyncHandler(async (req, res, next) => {
 
 export const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-
   const user = await User.findOne({ where: { email: email.toLowerCase() } });
+  user = { ...user };
   if (!user) {
     const error = new Error("Email not found");
     error.statusCode = 404;
@@ -51,9 +48,18 @@ export const login = asyncHandler(async (req, res, next) => {
     payload: { id: user.id, role: user.role },
     expiresIn: 30 * 60 * 24 * 365,
   });
-  user.status = "online";
+  const { id, email: userEmail, name, role } = user;
   await user.save();
-  return res
-    .status(201)
-    .json({ message: "Done", accessToken, user });
+  return res.json({
+    message: "Done",
+    accessToken,
+    refreshToken,
+    user: {
+      id,
+      name,
+      email: userEmail,
+      photoUrl,
+      role,
+    },
+  });
 });

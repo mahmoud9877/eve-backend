@@ -5,7 +5,7 @@ const router = Router();
 
 router.get(
   "/:userId",
-  // auth(roles.User),
+  auth(roles.User),
   // validation(validators.createProfile),
   officeController.getEmployee
 );
