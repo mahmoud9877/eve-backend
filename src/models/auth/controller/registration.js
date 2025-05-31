@@ -24,32 +24,40 @@ export const signup = asyncHandler(async (req, res, next) => {
 
 export const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
+
   const user = await User.findOne({ where: { email: email.toLowerCase() } });
-  user = { ...user };
+
   if (!user) {
     const error = new Error("Email not found");
     error.statusCode = 404;
     return next(error);
   }
+
   const isMatch = await compare({
     plaintext: password,
     hashValue: user.password,
   });
+
   if (!isMatch) {
     const error = new Error("Invalid login credentials");
     error.statusCode = 401;
     return next(error);
   }
+
   const accessToken = generateToken({
     payload: { id: user.id, role: user.role },
     expiresIn: 30 * 60,
   });
+
   const refreshToken = generateToken({
     payload: { id: user.id, role: user.role },
     expiresIn: 30 * 60 * 24 * 365,
   });
-  const { id, email: userEmail, name, role } = user;
-  await user.save();
+
+  const userData = user.toJSON(); // ✅
+
+  const { id, email: userEmail, name, role } = userData;
+
   return res.json({
     message: "Done",
     accessToken,
@@ -58,7 +66,6 @@ export const login = asyncHandler(async (req, res, next) => {
       id,
       name,
       email: userEmail,
-      photoUrl,
       role,
     },
   });
