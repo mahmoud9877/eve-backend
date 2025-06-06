@@ -1,6 +1,4 @@
 import jwt from "jsonwebtoken";
-console.log(process.env.TOKEN_SIGNATURE);
-
 export const generateToken = ({
   payload = {},
   signature = process.env.TOKEN_SIGNATURE,

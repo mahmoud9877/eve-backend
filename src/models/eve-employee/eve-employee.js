@@ -17,7 +17,7 @@ export const createEveEmployee = asyncHandler(async (req, res) => {
   }
   const { name, department, gender, introduction, photoUrl } = req.body;
 
-  console.log({ name, department, gender, introduction, photoUrl });
+  // console.log({ name, department, gender, introduction, photoUrl });
   const EveEmployee = await eveEmployeeModel.create({
     name,
     department,

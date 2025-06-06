@@ -24,7 +24,6 @@ export const signup = asyncHandler(async (req, res, next) => {
 
 export const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-
   const user = await User.findOne({ where: { email: email.toLowerCase() } });
 
   if (!user) {
