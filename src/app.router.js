@@ -33,7 +33,7 @@ const initApp = (app, express) => {
   });
 
   // Global Error Handler
-  app.use(globalErrorHandling); // لازم تكون 4 parameters في الفنكشن نفسها
+  // app.use(globalErrorHandling); // لازم تكون 4 parameters في الفنكشن نفسها
 };
 
 export default initApp;
