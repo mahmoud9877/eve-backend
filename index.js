@@ -17,9 +17,10 @@ const startServer = async () => {
     await sequelize.authenticate();
     console.log("✅ DB Connection established");
     await sequelize.sync({ alter: false });
-    // await sequelize.sync({ force: true });
     console.log("✅ Models synchronized with database");
-    initApp(app, express);
+
+    app.use(express.static("public")); // ✅ أول حاجة بعد middlewares
+    initApp(app, express); // ✅ بعدين الراوتات
 
     app.listen(PORT, () => {
       console.log(`🚀 Server running at http://localhost:${PORT}`);

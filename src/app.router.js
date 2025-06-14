@@ -14,7 +14,6 @@ const initApp = (app, express) => {
   app.use(cors(corsOptions));
   app.use(cookieParser());
   app.use(express.json());
-  app.get("/favicon.ico", (req, res) => res.status(204).end());
 
   app.get("/", (req, res) => {
     res.send("🎉 API is working!");
