@@ -18,6 +18,7 @@ const initApp = (app, express) => {
   app.get("/", (req, res) => {
     res.send("🎉 API is working!");
   });
+  app.get("/favicon.ico", (req, res) => res.status(204));
 
   app.use(`/auth`, authRouter);
   app.use(`/eve-employee`, eveEmployeeRouter);
