@@ -92,7 +92,7 @@
 import path from "path";
 import dotenv from "dotenv";
 import mammoth from "mammoth";
-import pdfParse from "pdf-parse";
+import pdfParse from "../../utils/pdf-parse/lib/pdf-parse.js";
 import { fileURLToPath } from "url";
 import { CohereClient } from "cohere-ai";
 import Employee from "../../../DataBase/model/Employee.model.js";
