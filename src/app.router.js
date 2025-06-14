@@ -3,7 +3,7 @@ import authRouter from "./models/auth/auth.router.js";
 import chatRouter from "./models/chat/chat.router.js";
 import cookieParser from "cookie-parser";
 // import officeRouter from "./models/office/office.router.js";
-import { globalErrorHandling } from "./utils/errorHandling.js";
+// import { globalErrorHandling } from "./utils/errorHandling.js";
 import eveEmployeeRouter from "./models/eve-employee/eve-employee.router.js";
 
 const initApp = (app, express) => {
