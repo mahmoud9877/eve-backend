@@ -31,8 +31,8 @@ await sequelize
   });
 
 // تقديم ملفات الستاتيك
-// app.get("/favicon.ico", (req, res) => res.status(204).end());
-// app.get("/favicon.png", (req, res) => res.status(204).end());
+app.get("/favicon.ico", (req, res) => res.status(204).end());
+app.get("/favicon.png", (req, res) => res.status(204).end());
 // تهيئة الراوتات والميدل وير
 initApp(app, express);
 
