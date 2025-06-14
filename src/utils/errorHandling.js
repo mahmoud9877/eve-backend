@@ -1,28 +1,18 @@
-import path from "path";
-import dotenv from "dotenv";
-import { fileURLToPath } from "url";
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: path.join(__dirname, "../../config/.env") });
-
 export const asyncHandler = (fn) => {
   return (req, res, next) => {
     fn(req, res, next).catch((err) => {
-      err.statusCode = err.statusCode || 500;
-      return next(err);
+      return next(new Error(err, { cause: 500 }));
     });
   };
 };
 
 export const globalErrorHandling = (err, req, res, next) => {
-  const status = err.statusCode || 500;
-  if (process.env.MOOD === "DEV") {
-    return res.status(status).json({
-      message: err.message,
-      error: err,
-      stack: err.stack,
-    });
+  if (err) {
+    if (process.env.MOOD == "DEV") {
+      return res
+        .status(err.cause || 500)
+        .json({ message: err.message, err, stack: err.stack });
+    }
+    return res.status(err.cause || 500).json({ message: err.message });
   }
-  return res.status(status).json({
-    message: err.message || "Internal Server Error",
-  });
 };
