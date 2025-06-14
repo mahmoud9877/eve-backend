@@ -1,11 +1,18 @@
 import { Router } from "express";
 import * as chatController from "./chat.js";
+import multer from "multer";
 import { validation } from "../../middleware/validation.js";
-import { auth, roles } from "../../middleware/auth.js";
+import * as validators from "./chat.validation.js";
+
 const router = Router();
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
-router.post("/", chatController.createChat);
-
-router.post("/", auth(roles.User), chatController.createChat);
+router.post(
+  "/",
+  validation(validators.chatMessageSchema),
+  upload.single("file"),
+  chatController.uploadAndChat
+);
 
 export default router;

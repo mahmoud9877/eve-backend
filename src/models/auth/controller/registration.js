@@ -1,7 +1,9 @@
 import User from "../../../../DataBase/model/User.model.js";
+import jwt from "jsonwebtoken";
 import { asyncHandler } from "../../../utils/errorHandling.js";
-import { generateToken } from "../../../utils/GenerateAndVerifyToken.js";
 import { hash, compare } from "../../../utils/HashAndCompare.js";
+import Employee from "../../../../DataBase/model/Employee.model.js";
+import { generateToken } from "../../../utils/GenerateAndVerifyToken.js";
 
 export const signup = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
@@ -44,28 +46,68 @@ export const login = asyncHandler(async (req, res, next) => {
   }
 
   const accessToken = generateToken({
-    payload: { id: user.id, role: user.role },
-    expiresIn: 30 * 60,
+    payload: { id: user.id },
+    expiresIn: 30 * 60, // 30 mins
   });
 
   const refreshToken = generateToken({
-    payload: { id: user.id, role: user.role },
-    expiresIn: 30 * 60 * 24 * 365,
+    payload: { id: user.id },
+    expiresIn: "30d",
   });
 
-  const userData = user.toJSON(); // ✅
+  const userData = user.toJSON();
+  const { id, email: userEmail, name } = userData;
 
-  const { id, email: userEmail, name, role } = userData;
+  const employee = await Employee.findOne({
+    where: { createdBy: id },
+  });
 
-  return res.json({
-    message: "Done",
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // لازم تكون true في الإنتاج
+    sameSite: "strict",
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 يوم بالميلي ثانية
+  });
+
+  return res.status(200).json({
+    // message: "Done",
     accessToken,
-    refreshToken,
     user: {
       id,
       name,
       email: userEmail,
-      role,
+      employee: employee?.id || null,
     },
   });
+});
+
+export const refreshToken = asyncHandler(async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.status(401).json({ message: "Refresh token required" });
+  }
+
+  try {
+    const payload = jwt.verify(refreshToken, process.env.TOKEN_SIGNATURE);
+
+    const newAccessToken = jwt.sign(
+      { id: payload.id },
+      process.env.TOKEN_SIGNATURE,
+      { expiresIn: "15m" }
+    );
+
+    return res.json({ accessToken: newAccessToken });
+  } catch (err) {
+    return res.status(403).json({ message: "Invalid refresh token" });
+  }
+});
+
+export const logout = asyncHandler(async (req, res) => {
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+  return res.status(200).json({ message: "Logged out successfully" });
 });

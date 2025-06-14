@@ -1,9 +1,9 @@
-import express from "express";
-import initApp from "./src/app.router.js";
-import path from "path";
 import "mysql2";
-import { fileURLToPath } from "url";
+import path from "path";
 import dotenv from "dotenv";
+import express from "express";
+import { fileURLToPath } from "url";
+import initApp from "./src/app.router.js";
 import { sequelize, User, Employee } from "./DataBase/model/index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -16,12 +16,11 @@ const startServer = async () => {
   try {
     await sequelize.authenticate();
     console.log("✅ DB Connection established");
-
-
     await sequelize.sync({ alter: false });
+    // await sequelize.sync({ force: true });
     console.log("✅ Models synchronized with database");
-
     initApp(app, express);
+
     app.listen(PORT, () => {
       console.log(`🚀 Server running at http://localhost:${PORT}`);
     });

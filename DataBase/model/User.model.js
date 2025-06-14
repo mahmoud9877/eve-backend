@@ -23,14 +23,6 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    photoUrl: {
-      type: DataTypes.STRING,
-      defaultValue: "https://placehold.co/200x200?text=User&font=roboto",
-    },
-    role: {
-      type: DataTypes.ENUM("Admin", "User"),
-      defaultValue: "User",
-    },
   },
   {
     timestamps: true,

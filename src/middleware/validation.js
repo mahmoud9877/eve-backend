@@ -27,16 +27,24 @@ export const generalFields = {
 };
 
 // Middleware for validating input data against a Joi schema
-export const validation = (schema) => {
+export const validation = (schema, source = ["body", "params", "query"]) => {
   return (req, res, next) => {
-    let inputsData = { ...req.body, ...req.params, ...req.query };
+    let inputsData = {};
+    source.forEach((key) => {
+      if (req[key]) {
+        inputsData = { ...inputsData, ...req[key] };
+      }
+    });
+
     const validationResult = schema.validate(inputsData, { abortEarly: false });
+
     if (validationResult.error) {
       return res.status(400).json({
         message: "validationErr",
         validationErr: validationResult.error.details,
       });
     }
+
     return next();
   };
 };

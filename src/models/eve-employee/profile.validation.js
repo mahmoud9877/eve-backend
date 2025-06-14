@@ -5,5 +5,4 @@ export const createEveEmployee = Joi.object({
   department: Joi.string().min(2).max(25).required(),
   gender: Joi.string().min(2).max(25).required(),
   introduction: Joi.string().min(2).max(25).required(),
-  photoUrl: generalFields.file,
 }).required();

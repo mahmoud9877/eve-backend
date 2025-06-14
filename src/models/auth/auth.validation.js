@@ -20,19 +20,19 @@ export const login = joi
   })
   .required();
 
-export const sendCode = joi
-  .object({
-    email: generalFields.email,
-  })
-  .required();
+// export const sendCode = joi
+//   .object({
+//     email: generalFields.email,
+//   })
+//   .required();
 
-export const forgetPassword = joi
-  .object({
-    email: generalFields.email,
-    password: generalFields.password,
-    code: joi
-      .string()
-      .pattern(new RegExp(/^\d{4}$/))
-      .required(),
-  })
-  .required();
+// export const forgetPassword = joi
+//   .object({
+//     email: generalFields.email,
+//     password: generalFields.password,
+//     code: joi
+//       .string()
+//       .pattern(new RegExp(/^\d{4}$/))
+//       .required(),
+//   })
+//   .required();

@@ -13,6 +13,32 @@ const Employee = sequelize.define(
     },
     department: {
       type: DataTypes.ENUM(
+        "Engineering",
+        "Marketing",
+        "Sales",
+        "Human Resources",
+        "General Employee"
+      ),
+      allowNull: false,
+      defaultValue: "General Employee",
+    },
+    role: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "visitor",
+    },
+    position: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "General Employee",
+    },
+    knowledgeText: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      defaultValue: "",
+    },
+    department_office: {
+      type: DataTypes.ENUM(
         "CF PS HR MFG & Purchases",
         "CF PS MFG EGYPT",
         "F&A",
@@ -42,14 +68,6 @@ const Employee = sequelize.define(
       ),
       allowNull: false,
     },
-    gender: {
-      type: DataTypes.ENUM("male", "female"),
-      defaultValue: "male",
-    },
-    photoUrl: {
-      type: DataTypes.STRING,
-      defaultValue: "https://placehold.co/200x200?text=User&font=roboto",
-    },
     status: {
       type: DataTypes.ENUM("online", "away", "busy", "in meeting"),
       defaultValue: "online",
@@ -57,6 +75,7 @@ const Employee = sequelize.define(
     createdBy: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      // unique: true, // ✅ ده اللي هيمنع تكرار اليوزر
       references: {
         model: "Users",
         key: "id",

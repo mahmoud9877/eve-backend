@@ -1,5 +1,5 @@
-import sequelize from "../connection.js";
 import User from "./User.model.js";
+import sequelize from "../connection.js";
 import Employee from "./Employee.model.js";
 
 // Define associations
