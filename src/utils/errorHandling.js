@@ -22,7 +22,6 @@ export const globalErrorHandling = (err, req, res, next) => {
       stack: err.stack,
     });
   }
-
   return res.status(status).json({
     message: err.message || "Internal Server Error",
   });

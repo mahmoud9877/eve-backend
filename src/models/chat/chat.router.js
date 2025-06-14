@@ -1,12 +1,11 @@
+// routes/chat/chat.router.js
 import { Router } from "express";
 import * as chatController from "./chat.js";
-import multer from "multer";
 import { validation } from "../../middleware/validation.js";
 import * as validators from "./chat.validation.js";
+import upload from "../../utils/multer.js"; // ← استيراد من الملف الجديد
 
 const router = Router();
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
 
 router.post(
   "/",
