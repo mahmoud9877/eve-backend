@@ -61,6 +61,7 @@ export const login = asyncHandler(async (req, res, next) => {
   const employee = await Employee.findOne({
     where: { createdBy: id },
   });
+  console.log("mode env", process.env.NODE_ENV);
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,

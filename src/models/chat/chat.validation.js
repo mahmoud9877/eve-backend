@@ -1,5 +1,3 @@
-// validation/chat.schema.ts
-
 import Joi from "joi";
 
 export const chatMessageSchema = Joi.object({

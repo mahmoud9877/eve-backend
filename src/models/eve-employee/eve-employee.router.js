@@ -1,15 +1,10 @@
 import { Router } from "express";
-import upload from "../../utils/multer.js";
-import { auth, roles } from "../../middleware/auth.js";
+import { auth } from "../../middleware/auth.js";
 import * as eveEmployeeController from "./eve-employee.js";
 const router = Router();
 
 router.get("/", auth(), eveEmployeeController.getAllEveEmployee);
-router.get(
-  "/search",
-  auth(roles.User),
-  eveEmployeeController.searchEveEmployee
-);
+router.get("/search", auth(), eveEmployeeController.searchEveEmployee);
 
 router.get(
   "/my-employee",
