@@ -26,12 +26,14 @@ export const generalFields = {
   }),
 };
 
-// Middleware for validating input data against a Joi schema
 export const validation = (schema, source = ["body", "params", "query"]) => {
   return (req, res, next) => {
     let inputsData = {};
+
     source.forEach((key) => {
-      if (req[key]) {
+      if (key === "file" && req.file) {
+        inputsData.file = req.file;
+      } else if (req[key]) {
         inputsData = { ...inputsData, ...req[key] };
       }
     });
