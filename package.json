@@ -4,7 +4,7 @@
   "description": "Chat app using Node.js, Sequelize, and AI integration",
   "author": "Mahmoud Ali",
   "type": "module",
-  "main": "index.js",
+  "main": "./index.js",
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js"
