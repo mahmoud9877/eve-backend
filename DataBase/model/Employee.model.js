@@ -66,7 +66,7 @@ const Employee = sequelize.define(
         "TSM",
         "Utilities"
       ),
-      allowNull: false,
+      allowNull: true,
     },
     status: {
       type: DataTypes.ENUM("online", "away", "busy", "in meeting"),

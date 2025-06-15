@@ -50,7 +50,6 @@ export const createEveEmployee = asyncHandler(async (req, res, next) => {
   const eveEmployee = await Employee.create({
     name,
     department,
-    department_office: "",
     introduction,
     position,
     createdBy: user.id,
