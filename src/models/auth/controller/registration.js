@@ -47,7 +47,7 @@ export const login = asyncHandler(async (req, res, next) => {
 
   const accessToken = generateToken({
     payload: { id: user.id },
-    expiresIn: 30 * 60, // 30 mins
+    expiresIn: 60 * 60, // 30 mins
   });
 
   const refreshToken = generateToken({
@@ -91,13 +91,12 @@ export const refreshToken = asyncHandler(async (req, res) => {
 
   try {
     const payload = jwt.verify(refreshToken, process.env.TOKEN_SIGNATURE);
-
     const newAccessToken = jwt.sign(
       { id: payload.id },
       process.env.TOKEN_SIGNATURE,
       { expiresIn: "15m" }
     );
-
+    console.log("newAccessToken", newAccessToken);
     return res.json({ accessToken: newAccessToken });
   } catch (err) {
     return res.status(403).json({ message: "Invalid refresh token" });
