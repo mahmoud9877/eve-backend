@@ -23,9 +23,8 @@ await sequelize
 
 // مزامنة الجداول
 await sequelize
-  .sync({ alter: true })
+  .sync({ alter: false })
   // .sync({ force: true })
-
   .then(() => console.log("✅ Models synchronized with database"))
   .catch((err) => {
     console.error("❌ Sync Error:", err);
