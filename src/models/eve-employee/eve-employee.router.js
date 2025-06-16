@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { auth } from "../../middleware/auth.js";
 import * as eveEmployeeController from "./eve-employee.js";
+import { uploadImage } from "../../utils/multer.js";
 const router = Router();
 
 router.get("/", auth(), eveEmployeeController.getAllEveEmployee);
@@ -17,7 +18,7 @@ router.get(
 router.post(
   "/",
   auth(),
-  // upload.single("photoUrl"),
+  uploadImage.single("photoUrl"),
   // validation(validators.createEveEmployee),
   eveEmployeeController.createEveEmployee
 );

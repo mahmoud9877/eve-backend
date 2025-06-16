@@ -37,6 +37,10 @@ const Employee = sequelize.define(
       allowNull: false,
       defaultValue: "",
     },
+    photoUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     department_office: {
       type: DataTypes.ENUM(
         "CF PS HR MFG & Purchases",

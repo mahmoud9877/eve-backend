@@ -26,33 +26,35 @@ export const searchEveEmployee = asyncHandler(async (req, res) => {
   return res.status(200).json({ message: "Done", searchResults });
 });
 
-export const createEveEmployee = asyncHandler(async (req, res, next) => {
+export const createEveEmployee = asyncHandler(async (req, res) => {
   const user = req.user;
 
   if (!user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  // const existingEmployee = await Employee.findOne({
-  //   where: { createdBy: user.id },
-  // });
-  // if (existingEmployee) {
-  //   return res.status(400).json({
-  //     message: "This user already has an employee assigned.",
-  //   });
-  // }
 
   const { name, department, introduction, position } = req.body;
 
-  if (!name || !department || !introduction) {
+  if (!name || !department || !introduction || !position) {
     return res.status(400).json({ message: "Missing required fields" });
   }
+
+  let photoUrl = null;
+  if (req.file) {
+    photoUrl = `/uploads/${req.file.filename}`;
+  }
+
+  // ✨ هنا بنبني الـ knowledgeText تلقائي
+  const knowledgeText = `مرحباً، أنا ${name}. أعمل في قسم ${department} بمنصب ${position}. نبذة عني: ${introduction}`;
 
   const eveEmployee = await Employee.create({
     name,
     department,
     introduction,
     position,
+    photoUrl,
     createdBy: user.id,
+    knowledgeText, // ← نضيفها هنا
   });
 
   return res.status(201).json({ message: "Done", eveEmployee });
