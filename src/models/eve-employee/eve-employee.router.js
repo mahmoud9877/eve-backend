@@ -5,15 +5,9 @@ import { uploadImage } from "../../utils/multer.js";
 const router = Router();
 
 router.get("/", auth(), eveEmployeeController.getAllEveEmployee);
-router.get("/:id", auth(), eveEmployeeController.getEmployeeById);
+router.get("/my-employee", auth(), eveEmployeeController.getMyEveEmployee);
 
-router.get(
-  "/my-employee",
-  auth(),
-  // upload.single("photoUrl"),
-  // validation(validators.createEveEmployee),
-  eveEmployeeController.getMyEveEmployee
-);
+router.get("/:id", auth(), eveEmployeeController.getEmployeeById);
 
 router.post(
   "/",

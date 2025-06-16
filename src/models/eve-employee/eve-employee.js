@@ -1,4 +1,3 @@
-import { Op } from "sequelize";
 import { asyncHandler } from "../../utils/errorHandling.js";
 import Employee from "../../../DataBase/model/Employee.model.js";
 
@@ -78,13 +77,21 @@ export const updateEveEmployee = asyncHandler(async (req, res, next) => {
 });
 
 export const getMyEveEmployee = asyncHandler(async (req, res) => {
+  
   const user = req.user;
+  console.log(user.id);
   if (!user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  const eveEmployee = await Employee.findAll();
-  if (!eveEmployee) {
-    return res.status(404).json({ message: "Employee not found" });
+  const employees = await Employee.findAll({
+    where: {
+      createdBy: user.id,
+    },
+  });
+
+  if (!employees || employees.length === 0) {
+    return res.status(200).json({ message: "Done", employees });
   }
-  return res.status(200).json({ message: "Done", eveEmployee });
+
+  return res.status(200).json({ message: "Done", employees });
 });
