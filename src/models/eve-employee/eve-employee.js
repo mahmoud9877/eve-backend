@@ -7,11 +7,10 @@ export const getAllEveEmployee = asyncHandler(async (req, res) => {
 });
 
 export const getEmployeeById = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+  console.log("sssssssssssssssssssssss", id);
   const oneEmployee = await Employee.findOne({
     where: {
       id: id,
-      createdBy: req.user.id,
     },
   });
   if (!oneEmployee) {
