@@ -172,9 +172,15 @@ export const uploadAndChat = async (req, res) => {
     }
 
     const egyptTimeNow = getEgyptDateTime();
-    const prompt = `تاريخ ووقت مصر الحالي: ${egyptTimeNow}.\nالمعرفة التالية تم جمعها مسبقاً عن الموظف:\n${
-      employee.knowledgeText?.slice(0, 3000) || "لا توجد معرفة بعد"
-    }\n\nالسؤال: ${question}\nالرجاء الرد بنفس لغة السؤال.\nالجواب:`;
+
+    const prompt = `تاريخ ووقت مصر الحالي: ${egyptTimeNow}.
+المعرفة التالية تم جمعها مسبقاً عن الموظف:
+${employee.knowledgeText?.slice(0, 3000) || "لا توجد معرفة بعد"}
+
+الرجاء الرد باللغة: ${employee.language || "العربية"}
+
+السؤال: ${question}
+الجواب:`;
 
     const response = await cohere.generate({
       model: "command-r-plus",
