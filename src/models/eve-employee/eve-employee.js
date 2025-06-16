@@ -82,9 +82,7 @@ export const getMyEveEmployee = asyncHandler(async (req, res) => {
   if (!user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  const eveEmployee = await Employee.findAll({
-    where: { createdBy: user.id },
-  });
+  const eveEmployee = await Employee.findAll();
   if (!eveEmployee) {
     return res.status(404).json({ message: "Employee not found" });
   }
