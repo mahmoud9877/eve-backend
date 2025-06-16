@@ -177,9 +177,8 @@ export const uploadAndChat = async (req, res) => {
 المعرفة التالية تم جمعها مسبقاً عن الموظف:
 ${employee.knowledgeText?.slice(0, 3000) || "لا توجد معرفة بعد"}
 
-الرجاء الرد باللغة: ${employee.language || "العربية"}
-
 السؤال: ${question}
+الرجاء الرد بنفس لغة الرسالة أعلاه دون تغيير اللغة.
 الجواب:`;
 
     const response = await cohere.generate({
