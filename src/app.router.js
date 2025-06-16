@@ -8,7 +8,7 @@ import eveEmployeeRouter from "./models/eve-employee/eve-employee.router.js";
 
 const initApp = (app, express) => {
   const corsOptions = {
-    origin: ["https://eve-frontend-eta.vercel.app/", "http://localhost:3000"],
+    origin: ["https://eve-frontend-eta.vercel.app", "http://localhost:3000"],
     credentials: true,
   };
 
