@@ -47,7 +47,7 @@ export const login = asyncHandler(async (req, res, next) => {
 
   const accessToken = generateToken({
     payload: { id: user.id },
-    expiresIn: 60 * 60, // 30 mins
+    expiresIn: 20, // 30 mins
   });
 
   const refreshToken = generateToken({
@@ -83,7 +83,7 @@ export const login = asyncHandler(async (req, res, next) => {
 });
 
 export const refreshToken = asyncHandler(async (req, res) => {
-  const { refreshToken } = req.body;
+  const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
     return res.status(401).json({ message: "Refresh token required" });
