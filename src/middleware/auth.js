@@ -40,10 +40,6 @@ export const auth = () => {
       return next(new Error("User not found", { cause: 401 }));
     }
 
-    if (!user) {
-      return next(new Error("Not registered account", { cause: 401 }));
-    }
-
     // Attach user to the request object
     req.user = user;
     return next();

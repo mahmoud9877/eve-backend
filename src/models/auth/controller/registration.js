@@ -1,9 +1,11 @@
 import User from "../../../../DataBase/model/User.model.js";
-import jwt from "jsonwebtoken";
 import { asyncHandler } from "../../../utils/errorHandling.js";
 import { hash, compare } from "../../../utils/HashAndCompare.js";
 import Employee from "../../../../DataBase/model/Employee.model.js";
-import { generateToken } from "../../../utils/GenerateAndVerifyToken.js";
+import {
+  generateToken,
+  verifyToken,
+} from "../../../utils/GenerateAndVerifyToken.js";
 
 export const signup = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
@@ -84,21 +86,23 @@ export const login = asyncHandler(async (req, res, next) => {
 
 export const refreshToken = asyncHandler(async (req, res) => {
   const { refreshToken } = req.cookies;
+  console.log("🟡 Received Refresh Token:", refreshToken);
 
   if (!refreshToken) {
     return res.status(401).json({ message: "Refresh token required" });
   }
 
   try {
-    const payload = jwt.verify(refreshToken, process.env.TOKEN_SIGNATURE);
-    const newAccessToken = jwt.sign(
-      { id: payload.id },
-      process.env.TOKEN_SIGNATURE,
-      { expiresIn: "15m" }
-    );
-    console.log("newAccessToken", newAccessToken);
+    const payload = verifyToken({ token: refreshToken }); // ✅ باستخدام الدالة
+    const newAccessToken = generateToken({
+      payload: { id: payload.id },
+      expiresIn: 15 * 60, // 15 دقيقة
+    });
+
+    console.log("🟢 New Access Token:", newAccessToken);
     return res.json({ accessToken: newAccessToken });
   } catch (err) {
+    console.log("🔴 Error verifying refresh token:", err.message);
     return res.status(403).json({ message: "Invalid refresh token" });
   }
 });
@@ -106,8 +110,8 @@ export const refreshToken = asyncHandler(async (req, res) => {
 export const logout = asyncHandler(async (req, res) => {
   res.clearCookie("refreshToken", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "none",
+    secure: true,
   });
   return res.status(200).json({ message: "Logged out successfully" });
 });
