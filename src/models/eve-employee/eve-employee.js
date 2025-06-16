@@ -7,23 +7,18 @@ export const getAllEveEmployee = asyncHandler(async (req, res) => {
   return res.status(200).json({ message: "Done", employees });
 });
 
-export const searchEveEmployee = asyncHandler(async (req, res) => {
-  const { name } = req.query;
-
-  if (!name || name.trim() === "") {
-    return res.status(400).json({ message: "Name is required for search" });
-  }
-
-  const searchResults = await Employee.findAll({
+export const getEmployeeById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const checkId = await Employee.findOne({
     where: {
-      name: {
-        [Op.like]: `%${name}%`, // يسمح بالبحث الجزئي
-      },
-      createdBy: req.user.id, // يعرض فقط سجلات المستخدم الحالي
+      id: id,
+      createdBy: req.user.id,
     },
   });
-
-  return res.status(200).json({ message: "Done", searchResults });
+  if (!checkId) {
+    return res.status(404).json({ message: "Employee not found" });
+  }
+  return res.status(200).json({ message: "Done", checkId });
 });
 
 export const createEveEmployee = asyncHandler(async (req, res) => {
@@ -44,7 +39,6 @@ export const createEveEmployee = asyncHandler(async (req, res) => {
     photoUrl = `/uploads/${req.file.filename}`;
   }
 
-  // ✨ هنا بنبني الـ knowledgeText تلقائي
   const knowledgeText = `مرحباً، أنا ${name}. أعمل في قسم ${department} بمنصب ${position}. نبذة عني: ${introduction}`;
 
   const eveEmployee = await Employee.create({

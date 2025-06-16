@@ -5,7 +5,7 @@ import { uploadImage } from "../../utils/multer.js";
 const router = Router();
 
 router.get("/", auth(), eveEmployeeController.getAllEveEmployee);
-router.get("/search", auth(), eveEmployeeController.searchEveEmployee);
+router.get("/:id", auth(), eveEmployeeController.getEmployeeById);
 
 router.get(
   "/my-employee",

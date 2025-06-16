@@ -35,7 +35,7 @@ const initApp = (app, express) => {
 
   // API Routes
   app.use("/auth", authRouter);
-  app.use("/eve-employee", eveEmployeeRouter);
+  app.use("/sse", eveEmployeeRouter);
   app.use("/chat", chatRouter);
   // app.use("/office", officeRouter);
 
