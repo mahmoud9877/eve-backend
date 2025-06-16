@@ -47,33 +47,20 @@ export const login = asyncHandler(async (req, res, next) => {
     return next(error);
   }
 
-  const accessToken = generateToken({
+  const token = generateToken({
     payload: { id: user.id },
-    expiresIn: 20, // 30 mins
+    expiresIn: 60 * 60 * 24 * 30, // = 2592000 ثانية (30 يوم)
   });
 
-  const refreshToken = generateToken({
-    payload: { id: user.id },
-    expiresIn: "30d",
-  });
-  console.log("refreshToken", refreshToken);
   const userData = user.toJSON();
   const { id, email: userEmail, name } = userData;
 
   const employee = await Employee.findOne({
     where: { createdBy: id },
   });
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-  });
-  console.log("cookies:", req.cookies);
 
   return res.status(200).json({
-    // message: "Done",
-    accessToken,
+    token,
     user: {
       id,
       name,
