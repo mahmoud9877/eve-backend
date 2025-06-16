@@ -8,16 +8,16 @@ export const getAllEveEmployee = asyncHandler(async (req, res) => {
 
 export const getEmployeeById = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const checkId = await Employee.findOne({
+  const oneEmployee = await Employee.findOne({
     where: {
       id: id,
       createdBy: req.user.id,
     },
   });
-  if (!checkId) {
+  if (!oneEmployee) {
     return res.status(404).json({ message: "Employee not found" });
   }
-  return res.status(200).json({ message: "Done", checkId });
+  return res.status(200).json({ message: "Done", oneEmployee });
 });
 
 export const createEveEmployee = asyncHandler(async (req, res) => {
@@ -77,7 +77,6 @@ export const updateEveEmployee = asyncHandler(async (req, res, next) => {
 });
 
 export const getMyEveEmployee = asyncHandler(async (req, res) => {
-  
   const user = req.user;
   console.log(user.id);
   if (!user) {
