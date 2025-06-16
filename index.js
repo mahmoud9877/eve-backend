@@ -20,10 +20,12 @@ await sequelize
     console.error("❌ DB Error:", err);
     process.exit(1); // نخرج من البرنامج لو فيه مشكلة في الاتصال
   });
+  
+  
 
 // مزامنة الجداول
 await sequelize
-  .sync({ alter: false })
+  .sync({ alter: true })
   // .sync({ force: true })
   .then(() => console.log("✅ Models synchronized with database"))
   .catch((err) => {

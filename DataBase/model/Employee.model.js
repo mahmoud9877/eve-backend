@@ -11,26 +11,10 @@ const Employee = sequelize.define(
         len: [2, 20],
       },
     },
-    department: {
-      type: DataTypes.ENUM(
-        "Engineering",
-        "Marketing",
-        "Sales",
-        "Human Resources",
-        "General Employee"
-      ),
-      allowNull: false,
-      defaultValue: "General Employee",
-    },
     role: {
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: "visitor",
-    },
-    position: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: "General Employee",
     },
     knowledgeText: {
       type: DataTypes.TEXT,
@@ -41,7 +25,7 @@ const Employee = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
-    department_office: {
+    department: {
       type: DataTypes.ENUM(
         "CF PS HR MFG & Purchases",
         "CF PS MFG EGYPT",
@@ -62,6 +46,11 @@ const Employee = sequelize.define(
         "QA",
         "Regional GMDSO",
         "Regional Tech Pack",
+        "Engineering",
+        "Marketing",
+        "Sales",
+        "Human Resources",
+        "General Employee",
         "RPM WH",
         "Shave Care Operations",
         "Shave Care Qualilty",
