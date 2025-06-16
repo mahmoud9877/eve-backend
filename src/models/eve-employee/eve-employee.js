@@ -91,7 +91,6 @@ export const getMyEveEmployee = asyncHandler(async (req, res) => {
       "id",
       "name",
       "department",
-      // "introduction",
       "photoUrl",
       "status",
     ],
