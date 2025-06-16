@@ -171,10 +171,10 @@ export const uploadAndChat = async (req, res) => {
       }
     }
 
-    const egyptTimeNow = getEgyptDateTime();
+    // const egyptTimeNow = getEgyptDateTime();
+    // Current Egypt time: ${egyptTimeNow}.
 
     const prompt = `
-Current Egypt time: ${egyptTimeNow}.
 The following knowledge has been collected about the employee:
 ${employee.knowledgeText?.slice(0, 3000) || "No knowledge available."}
 
