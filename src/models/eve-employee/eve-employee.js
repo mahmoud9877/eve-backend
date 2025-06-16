@@ -8,37 +8,39 @@ export const getAllEveEmployee = asyncHandler(async (req, res) => {
 
 export const getEmployeeById = asyncHandler(async (req, res) => {
   const { id } = req.params;
+
   const oneEmployee = await Employee.findOne({
-    where: {
-      id: id,
-    },
+    where: { id },
+    attributes: [
+      "id",
+      "name",
+      "department",
+      "introduction",
+      "photoUrl",
+      "status",
+    ],
   });
+
   if (!oneEmployee) {
     return res.status(404).json({ message: "Employee not found" });
   }
-  return res.status(200).json({ message: "Done", oneEmployee });
+  return res.status(200).json(oneEmployee);
 });
 
 export const createEveEmployee = asyncHandler(async (req, res) => {
   const user = req.user;
-
   if (!user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-
   const { name, department, introduction, position } = req.body;
-
   if (!name || !department || !introduction || !position) {
     return res.status(400).json({ message: "Missing required fields" });
   }
-
   let photoUrl = null;
   if (req.file) {
     photoUrl = `/uploads/${req.file.filename}`;
   }
-
   const knowledgeText = `مرحباً، أنا ${name}. أعمل في قسم ${department} بمنصب ${position}. نبذة عني: ${introduction}`;
-
   const eveEmployee = await Employee.create({
     name,
     department,
@@ -85,11 +87,17 @@ export const getMyEveEmployee = asyncHandler(async (req, res) => {
     where: {
       createdBy: user.id,
     },
+    attributes: [
+      "id",
+      "name",
+      "department",
+      "introduction",
+      "photoUrl",
+      "status",
+    ],
   });
-
   if (!employees || employees.length === 0) {
     return res.status(200).json({ message: "Done", employees });
   }
-
   return res.status(200).json({ message: "Done", employees });
 });
