@@ -1,19 +1,15 @@
 import jwt from "jsonwebtoken";
+import path from "path";
+import dotenv from "dotenv";
+import { fileURLToPath } from "url";
 
-export const generateToken = ({
-  payload = {},
-  signature = process.env.TOKEN_SIGNATURE,
-  expiresIn = 60 * 60, // default: 1 hour
-} = {}) => {
-  const token = jwt.sign(payload, signature, {
-    expiresIn: parseInt(expiresIn),
-  });
-  return token;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.join(__dirname, "../../config/.env") });
+
+export const generateToken = ({ payload = {}, expiresIn = "1h" } = {}) => {
+  return jwt.sign(payload, process.env.TOKEN_SIGNATURE, { expiresIn });
 };
 
-export const verifyToken = ({
-  token,
-  signature = process.env.TOKEN_SIGNATURE,
-} = {}) => {
-  return jwt.verify(token, signature);
+export const verifyToken = ({ token }) => {
+  return jwt.verify(token, process.env.TOKEN_SIGNATURE);
 };

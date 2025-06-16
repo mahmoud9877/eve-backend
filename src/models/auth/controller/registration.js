@@ -22,7 +22,7 @@ export const signup = asyncHandler(async (req, res, next) => {
   });
   return res.status(201).json({
     message: "Signup successful",
-    userId: user._id,
+    userId: user.id,
   });
 });
 
@@ -56,21 +56,20 @@ export const login = asyncHandler(async (req, res, next) => {
     payload: { id: user.id },
     expiresIn: "30d",
   });
-
+  console.log("refreshToken", refreshToken);
   const userData = user.toJSON();
   const { id, email: userEmail, name } = userData;
 
   const employee = await Employee.findOne({
     where: { createdBy: id },
   });
-  console.log("mode env", process.env.NODE_ENV);
-
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
     sameSite: "none",
     maxAge: 30 * 24 * 60 * 60 * 1000,
   });
+  console.log("cookies:", req.cookies);
 
   return res.status(200).json({
     // message: "Done",
