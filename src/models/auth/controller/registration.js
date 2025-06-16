@@ -65,9 +65,9 @@ export const login = asyncHandler(async (req, res, next) => {
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // لازم تكون true في الإنتاج
-    sameSite: "strict",
-    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 يوم بالميلي ثانية
+    secure: true,
+    sameSite: "none",
+    maxAge: 30 * 24 * 60 * 60 * 1000,
   });
 
   return res.status(200).json({
