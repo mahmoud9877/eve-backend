@@ -12,20 +12,16 @@ dotenv.config({ path: path.join(__dirname, "./config/.env") });
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// محاولة الاتصال بقاعدة البيانات
 await sequelize
   .authenticate()
   .then(() => console.log("✅ DB Connection established"))
   .catch((err) => {
     console.error("❌ DB Error:", err);
-    process.exit(1); // نخرج من البرنامج لو فيه مشكلة في الاتصال
+    process.exit(1);
   });
-  
-  
 
-// مزامنة الجداول
 await sequelize
-  .sync({ alter: true })
+  .sync({ alter: false })
   // .sync({ force: true })
   .then(() => console.log("✅ Models synchronized with database"))
   .catch((err) => {

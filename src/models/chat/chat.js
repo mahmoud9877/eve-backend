@@ -158,8 +158,7 @@ export const uploadAndChat = async (req, res) => {
 
         const egyptTime = getEgyptDateTime();
 
-        // إضافة التاريخ والوقت في بداية المعرفة الجديدة
-        newKnowledge = `تم رفع هذه المعرفة في: ${egyptTime}\n${newKnowledge}`;
+        newKnowledge = `This knowledge was uploaded on: ${egyptTime}\n${newKnowledge}`;
 
         // تحديث قاعدة البيانات
         employee.knowledgeText = `${
