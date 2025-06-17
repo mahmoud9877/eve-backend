@@ -32,23 +32,22 @@ export const createEveEmployee = asyncHandler(async (req, res) => {
   if (!user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  const { name, department, introduction, position } = req.body;
-  if (!name || !department || !introduction || !position) {
+  const { name, department, introduction } = req.body;
+  if (!name || !department || !introduction) {
     return res.status(400).json({ message: "Missing required fields" });
   }
   let photoUrl = null;
   if (req.file) {
     photoUrl = `/uploads/${req.file.filename}`;
   }
-  const knowledgeText = `مرحباً، أنا ${name}. أعمل في قسم ${department} بمنصب ${position}. نبذة عني: ${introduction}`;
+  const knowledgeText = `Hello, I'm ${name}. I work in the ${department}. About me: ${introduction}`;
   const eveEmployee = await Employee.create({
     name,
     department,
     introduction,
-    position,
     photoUrl,
     createdBy: user.id,
-    knowledgeText, // ← نضيفها هنا
+    knowledgeText,
   });
 
   return res.status(201).json({ message: "Done", eveEmployee });
