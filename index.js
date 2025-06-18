@@ -9,7 +9,10 @@ import { sequelize } from "./DataBase/model/index.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, "./config/.env") });
 
-const app = express();
+const app = express(); // ⬅️ هنا الأول
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // ⬅️ بعده مباشرة
+
 const PORT = process.env.PORT || 5000;
 
 await sequelize
@@ -22,7 +25,6 @@ await sequelize
 
 await sequelize
   .sync({ alter: false })
-  // .sync({ force: true })
   .then(() => console.log("✅ Models synchronized with database"))
   .catch((err) => {
     console.error("❌ Sync Error:", err);
@@ -31,7 +33,6 @@ await sequelize
 
 initApp(app, express);
 
-// تشغيل السيرفر
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });

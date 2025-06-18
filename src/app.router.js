@@ -5,6 +5,11 @@ import cookieParser from "cookie-parser";
 // import officeRouter from "./models/office/office.router.js";
 import { globalErrorHandling } from "./utils/errorHandling.js";
 import eveEmployeeRouter from "./models/eve-employee/eve-employee.router.js";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const initApp = (app, express) => {
   const corsOptions = {

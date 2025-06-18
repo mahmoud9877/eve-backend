@@ -1,94 +1,3 @@
-// import path from "path";
-// import dotenv from "dotenv";
-// import mammoth from "mammoth";
-// import pdfParse from "pdf-parse";
-// import { fileURLToPath } from "url";
-// import { CohereClient } from "cohere-ai";
-// import Employee from "../../../DataBase/model/Employee.model.js";
-
-// const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// dotenv.config({ path: path.join(__dirname, "../../../config/.env") });
-
-// const cohere = new CohereClient({
-//   token: process.env.COHERE_API_KEY,
-// });
-
-// export const uploadAndChat = async (req, res) => {
-//   const file = req.file;
-//   const question = req.body.message;
-
-//   if (!question) {
-//     return res.status(400).json({ error: "الرسالة مطلوبة." });
-//   }
-
-//   let knowledge = "هذا مثال على نص المعرفة. يمكنك رفع ملفات لتحليله لاحقاً.";
-
-//   if (file) {
-//     try {
-//       const mimeType = file.mimetype;
-
-//       if (mimeType === "application/pdf") {
-//         const data = await pdfParse(file.buffer);
-//         knowledge = data.text;
-//       } else if (
-//         mimeType ===
-//         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-//       ) {
-//         const result = await mammoth.extractRawText({ buffer: file.buffer });
-//         knowledge = result.value;
-//       } else {
-//         return res.status(400).json({ error: "نوع الملف غير مدعوم." });
-//       }
-//     } catch (err) {
-//       return res.status(500).json({ error: "فشل تحليل الملف." });
-//     }
-//   }
-
-//   const prompt = `المعرفة التالية مستخرجة من ملف:\n${knowledge.slice(
-//     0,
-//     3000
-//   )}\n\nالسؤال: ${question}\nالرجاء الرد بنفس لغة السؤال.\nالجواب:`;
-
-//   try {
-//     const response = await cohere.generate({
-//       model: "command-r-plus",
-//       prompt,
-//       max_tokens: 300,
-//       temperature: 0.7,
-//     });
-
-//     if (!response?.generations || response.generations.length === 0) {
-//       return res.status(500).json({ error: "لم يتم توليد رد من Cohere." });
-//     }
-
-//     const reply = response.generations[0].text.trim();
-
-//     try {
-//       const employeeId = req.body.employeeId;
-//       if (!employeeId) {
-//         return res.status(400).json({ error: "Employee ID غير موجود." });
-//       }
-
-//       const employee = await Employee.findByPk(employeeId);
-//       if (!employee) {
-//         return res.status(404).json({ error: "الموظف غير موجود." });
-//       }
-
-//       employee.knowledgeText = reply;
-//       await employee.save();
-
-//       // ✅ نخرج مباشرة بعد إرسال الرد
-//       return res.json({ reply });
-//     } catch (dbError) {
-//       console.error("Database Error:", dbError.message);
-//       return res.status(500).json({ error: "فشل تحديث بيانات الموظف." });
-//     }
-//   } catch (err) {
-//     console.error("Cohere Error:", err.message);
-//     return res.status(500).json({ error: "فشل إنشاء الرد من البوت." });
-//   }
-// };
-
 import path from "path";
 import dotenv from "dotenv";
 import mammoth from "mammoth";
@@ -170,18 +79,27 @@ export const uploadAndChat = async (req, res) => {
       }
     }
 
-    // const egyptTimeNow = getEgyptDateTime();
-    // Current Egypt time: ${egyptTimeNow}.
+    const egyptTimeNow = getEgyptDateTime();
 
-    const prompt = `
-The following knowledge has been collected about the employee:
-${employee.knowledgeText?.slice(0, 3000) || "No knowledge available."}
+    let prompt = `
+    Current Egypt time: ${egyptTimeNow}.
+You are an AI assistant that must always respond in the same language used in the question.
+Do not translate. Do not answer in a different language. Do not mix languages.
 
-Please answer the following question using the **same language** it is written in. Do not translate or switch language. Preserve the question's original language.
+KNOWLEDGE:
+${employee.knowledgeText?.slice(0, 3000) || "No knowledge provided."}
 
-Question: ${question}
-Answer:
+QUESTION:
+${question}
+
+Respond ONLY in the language of the question.
+ANSWER:
 `;
+
+    if (/^[a-zA-Z0-9\s.,!?'"()\-]+$/.test(question)) {
+      prompt +=
+        "\n\nIMPORTANT: The question is in English. Respond ONLY in English.";
+    }
 
     const response = await cohere.generate({
       model: "command-r-plus",

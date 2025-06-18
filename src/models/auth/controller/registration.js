@@ -55,49 +55,12 @@ export const login = asyncHandler(async (req, res, next) => {
   const userData = user.toJSON();
   const { id, email: userEmail, name } = userData;
 
-  const employee = await Employee.findOne({
-    where: { createdBy: id },
-  });
-
   return res.status(200).json({
     token,
     user: {
       id,
       name,
       email: userEmail,
-      employee: employee?.id || null,
     },
   });
-});
-
-export const refreshToken = asyncHandler(async (req, res) => {
-  const { refreshToken } = req.cookies;
-  console.log("🟡 Received Refresh Token:", refreshToken);
-
-  if (!refreshToken) {
-    return res.status(401).json({ message: "Refresh token required" });
-  }
-
-  try {
-    const payload = verifyToken({ token: refreshToken }); // ✅ باستخدام الدالة
-    const newAccessToken = generateToken({
-      payload: { id: payload.id },
-      expiresIn: 15 * 60, // 15 دقيقة
-    });
-
-    console.log("🟢 New Access Token:", newAccessToken);
-    return res.json({ accessToken: newAccessToken });
-  } catch (err) {
-    console.log("🔴 Error verifying refresh token:", err.message);
-    return res.status(403).json({ message: "Invalid refresh token" });
-  }
-});
-
-export const logout = asyncHandler(async (req, res) => {
-  res.clearCookie("refreshToken", {
-    httpOnly: true,
-    sameSite: "none",
-    secure: true,
-  });
-  return res.status(200).json({ message: "Logged out successfully" });
 });
