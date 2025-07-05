@@ -20,7 +20,7 @@ router.post(
 router.put(
   "/:id",
   auth(),
-  // upload.single("photoUrl"),
+  uploadImage.single("photoUrl"),
   // validation(validators.createEveEmployee),
   eveEmployeeController.updateEveEmployee
 );
