@@ -30,6 +30,8 @@ export const uploadAndChat = async (req, res) => {
   const file = req.file;
   const question = req.body.message;
   const employeeId = req.body.employeeId;
+  console.log("BODY:", req.body);
+  console.log("FILE:", req.file);
 
   if (!question) return res.status(400).json({ error: "الرسالة مطلوبة." });
 
