@@ -42,7 +42,6 @@ export const uploadAndChat = async (req, res) => {
     const employee = await Employee.findByPk(employeeId);
     if (!employee) return res.status(404).json({ error: "الموظف غير موجود." });
 
-    // تحليل الملف لو موجود
     let newKnowledge = "";
     if (file) {
       try {
