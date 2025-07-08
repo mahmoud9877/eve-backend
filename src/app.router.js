@@ -11,39 +11,46 @@ const initApp = (app, express) => {
     credentials: true,
   };
 
+  // ✅ التعامل مع preflight requests (CORS manual headers)
+  app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "https://eve-frontend-eta.vercel.app");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    );
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+
+    // ✅ رد فوري على preflight requests
+    if (req.method === "OPTIONS") {
+      return res.sendStatus(204);
+    }
+
+    next();
+  });
+
+  // ✅ تفعيل CORS رسمي باستخدام middleware
   app.use(cors(corsOptions));
   app.use(cookieParser());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // Optional: Logging middleware during development
-  // app.use((req, res, next) => {
-  //   console.log(`${req.method} ${req.url}`);
-  //   next();
-  // });
-
-  // Health check
+  // ✅ Health check route
   app.get("/", (req, res) => {
-    console.log("Health check route hit");
     res.send("API is working!");
   });
 
-  // Ignore favicon requests
-  app.get("/favicon.ico", (req, res) => res.status(204).end());
-  app.get("/favicon.png", (req, res) => res.status(204).end());
-
-  // API Routes
+  // ✅ Routes
   app.use("/auth", authRouter);
   app.use("/eve-employee", eveEmployeeRouter);
   app.use("/chat", chatRouter);
-  // app.use("/office", officeRouter);
 
-  // Not Found Route
+  // ✅ 404 fallback
   app.all("*", (req, res) => {
     res.status(404).send("Invalid Routing. Please check URL or method.");
   });
 
-  // Global Error Handler (only activate when defined)
+  // ✅ Global Error Handler
   app.use(globalErrorHandling);
 };
 
