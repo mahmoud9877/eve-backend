@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import { auth } from "../../middleware/auth.js";
-import { uploadImage } from "../../utils/multer.js";
+import { uploadImage } from "../../utils/uploadImage.js";
 import * as eveEmployeeController from "./eve-employee.js";
 
 router.get("/", auth(), eveEmployeeController.getAllEveEmployee);

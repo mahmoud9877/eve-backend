@@ -3,7 +3,7 @@ import { Router } from "express";
 import * as chatController from "./chat.js";
 import { auth } from "../../middleware/auth.js";
 import * as validators from "./chat.validation.js";
-import { uploadDocument } from "../../utils/multer.js";
+import { uploadDocument } from "../../utils/uploadFile.js";
 import { validation } from "../../middleware/validation.js";
 
 const router = Router();
