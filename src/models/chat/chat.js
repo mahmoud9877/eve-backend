@@ -1,9 +1,9 @@
 import path from "path";
 import dotenv from "dotenv";
 import mammoth from "mammoth";
-import { extractTextFromPDF } from "../../utils/pdf.js";
 import { fileURLToPath } from "url";
 import { CohereClient } from "cohere-ai";
+import { extractTextFromPDF } from "../../utils/pdf.js";
 import Employee from "../../../DataBase/model/Employee.model.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -30,19 +30,23 @@ export const uploadAndChat = async (req, res) => {
   const file = req.file;
   const question = req.body.message;
   const employeeId = req.body.employeeId;
-  console.log("BODY:", req.body);
-  console.log("FILE:", req.file);
 
-  if (!question) return res.status(400).json({ error: "الرسالة مطلوبة." });
+  if (!question && !file) {
+    return res.status(400).json({
+      error: "Either message or file is required.",
+    });
+  }
 
-  if (!employeeId)
-    return res.status(400).json({ error: "Employee ID غير موجود." });
+  if (!employeeId) {
+    return res.status(400).json({ error: "Employee ID is required." });
+  }
 
   try {
     const employee = await Employee.findByPk(employeeId);
-    if (!employee) return res.status(404).json({ error: "الموظف غير موجود." });
+    if (!employee) return res.status(404).json({ error: "Employee not found." });
 
     let newKnowledge = "";
+
     if (file) {
       try {
         const mimeType = file.mimetype;
@@ -50,33 +54,43 @@ export const uploadAndChat = async (req, res) => {
           const data = await extractTextFromPDF(file.buffer);
           newKnowledge = data.text;
         } else if (
-          mimeType ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         ) {
           const result = await mammoth.extractRawText({ buffer: file.buffer });
           newKnowledge = result.value;
         } else {
-          return res.status(400).json({ error: "نوع الملف غير مدعوم." });
+          return res.status(400).json({ error: "Unsupported file type." });
+        }
+
+        if (newKnowledge.length > 10000) {
+          const summaryResponse = await cohere.summarize({
+            text: newKnowledge,
+            model: "command-r-plus",
+            length: "long",
+          });
+          newKnowledge = summaryResponse.summary || newKnowledge;
         }
 
         const egyptTime = getEgyptDateTime();
         const formattedKnowledge = `\n\n--- New Upload at ${egyptTime} ---\n${newKnowledge}`;
-        employee.knowledgeText = `${
-          employee.knowledgeText || ""
-        }${formattedKnowledge}`;
+        const totalKnowledge = `${employee.knowledgeText || ""}${formattedKnowledge}`;
+
+        if (totalKnowledge.length > 500000) {
+          return res.status(400).json({ error: "The total knowledge size exceeds the allowed limit." });
+        }
+
+        employee.knowledgeText = totalKnowledge;
         await employee.save();
 
         console.log("✅ Knowledge updated for employee:", employee.id);
-        console.log("📄 Last upload snippet:", newKnowledge.slice(0, 100));
+        console.log("📄 Snippet:", newKnowledge.slice(0, 200));
       } catch (err) {
-        console.error("❌ تحليل الملف فشل:", err);
-        return res.status(500).json({ error: "فشل تحليل الملف." });
+        console.error("❌ File analysis failed:", err);
+        return res.status(500).json({ error: "File analysis failed." });
       }
     }
 
     const egyptTimeNow = getEgyptDateTime();
-
-    // إعداد الـ prompt بالتفاصيل الشخصية + السياق
     let prompt = `
 🧠 You are EVE, a professional virtual employee.
 
@@ -87,11 +101,11 @@ export const uploadAndChat = async (req, res) => {
 
 🕐 Current Egypt time: ${egyptTimeNow}
 
-📄 CONTEXT FROM FILES:
+📄 CONTEXT FROM ALL FILES:
 ${employee.knowledgeText?.slice(-5000) || "No context available."}
 
 ❓ USER QUESTION:
-${question}
+${question || "No question provided. Only a file was uploaded."}
 
 📌 RULES:
 - Always use your personal information when answering questions about yourself.
@@ -103,13 +117,10 @@ ${question}
 🧾 ANSWER:
 `;
 
-    // لو السؤال إنجليزي، نبه الموديل
     if (/^[a-zA-Z0-9\s.,!?'"()\-]+$/.test(question)) {
-      prompt +=
-        "\n\nIMPORTANT: The question is in English. Respond ONLY in English.";
+      prompt += "\n\nIMPORTANT: The question is in English. Respond ONLY in English.";
     }
 
-    // إرسال الطلب لـ Cohere
     const response = await cohere.generate({
       model: "command-r-plus",
       prompt,
@@ -118,13 +129,12 @@ ${question}
     });
 
     if (!response?.generations?.length) {
-      return res.status(500).json({ error: "لم يتم توليد رد من Cohere." });
+      return res.status(500).json({ error: "No response generated from Cohere." });
     }
-
     const reply = response.generations[0].text.trim();
     return res.json({ reply });
   } catch (err) {
     console.error("❌ Error:", err.message);
-    return res.status(500).json({ error: "حدث خطأ أثناء المعالجة." });
+    return res.status(500).json({ error: "An unexpected error occurred." });
   }
 };

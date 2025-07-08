@@ -2,8 +2,12 @@ import { asyncHandler } from "../../utils/errorHandling.js";
 import Employee from "../../../DataBase/model/Employee.model.js";
 
 export const getAllEveEmployee = asyncHandler(async (req, res) => {
-  const employees = await Employee.findAll();
-  return res.status(200).json({ message: "Done", employees });
+  const getEmployees = await Employee.findAll();
+  const employees = getEmployees.map((emp) => {
+    const { knowledgeText, updatedAt, createdAt, ...rest } = emp.toJSON();
+    return rest;
+  });
+  return res.status(200).json({ employees });
 });
 
 export const getEmployeeById = asyncHandler(async (req, res) => {
@@ -24,7 +28,8 @@ export const getEmployeeById = asyncHandler(async (req, res) => {
   if (!oneEmployee) {
     return res.status(404).json({ message: "Employee not found" });
   }
-  return res.status(200).json(oneEmployee);
+  const { knowledgeText, ...employeeDataWithoutKnowledge } = oneEmployee.toJSON();
+  return res.status(200).json(employeeDataWithoutKnowledge);
 });
 
 export const createEveEmployee = asyncHandler(async (req, res) => {
@@ -53,20 +58,33 @@ export const createEveEmployee = asyncHandler(async (req, res) => {
   return res.status(201).json({ message: "Done", eveEmployee });
 });
 
+
+
+
+
 export const updateEveEmployee = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
+
   const checkEmployee = await Employee.findOne({ where: { id } });
   if (!checkEmployee) {
     return res.status(404).json({ message: "Employee not found" });
   }
+
   const { name, department, role, status } = req.body;
-  checkEmployee.name = name;
-  checkEmployee.department = department;
-  checkEmployee.role = role;
-  checkEmployee.status = status;
+
+  if (name !== undefined) checkEmployee.name = name;
+  if (department !== undefined) checkEmployee.department = department;
+  if (role !== undefined) checkEmployee.role = role;
+  if (status !== undefined) checkEmployee.status = status;
+
   await checkEmployee.save();
-  return res.status(200).json({ message: "Done", checkEmployee });
+
+  const { knowledgeText, createdAt, updatedAt, ...employeeDataWithoutKnowledge } = checkEmployee.toJSON();
+  return res.status(200).json(employeeDataWithoutKnowledge);
 });
+
+
+
 
 export const getMyEveEmployee = asyncHandler(async (req, res) => {
   const user = req.user;

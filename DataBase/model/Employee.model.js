@@ -17,10 +17,10 @@ const Employee = sequelize.define(
       defaultValue: "visitor",
     },
     knowledgeText: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-      defaultValue: "",
-    },
+      type: DataTypes.TEXT('long'),
+      allowNull: true,
+    }
+    ,
     photoUrl: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -72,6 +72,10 @@ const Employee = sequelize.define(
       references: {
         model: "Users",
         key: "id",
+      },
+      introduction: {
+        type: DataTypes.STRING,
+        allowNull: true
       },
       onDelete: "CASCADE",
     },

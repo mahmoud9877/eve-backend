@@ -6,22 +6,36 @@ import { globalErrorHandling } from "./utils/errorHandling.js";
 import eveEmployeeRouter from "./models/eve-employee/eve-employee.router.js";
 
 const initApp = (app, express) => {
+  const allowedOrigins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    // أضف أي دومين خارجي هنا لما ترفعه على سيرفر حقيقي
+    // "https://example.com",
+  ];
+
   const corsOptions = {
-    origin: ["https://eve-frontend-eta.vercel.app", "http://localhost:3000"],
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   };
 
-  // ✅ التعامل مع preflight requests (CORS manual headers)
   app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "https://eve-frontend-eta.vercel.app");
-    res.header("Access-Control-Allow-Credentials", "true");
-    res.header(
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    }
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader(
       "Access-Control-Allow-Headers",
       "Origin, X-Requested-With, Content-Type, Accept, Authorization"
     );
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
 
-    // ✅ رد فوري على preflight requests
     if (req.method === "OPTIONS") {
       return res.sendStatus(204);
     }
@@ -29,8 +43,9 @@ const initApp = (app, express) => {
     next();
   });
 
-  // ✅ تفعيل CORS رسمي باستخدام middleware
   app.use(cors(corsOptions));
+
+  // ✅ Middlewares
   app.use(cookieParser());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -40,7 +55,7 @@ const initApp = (app, express) => {
     res.send("API is working!");
   });
 
-  // ✅ Routes
+  // ✅ API routes
   app.use("/auth", authRouter);
   app.use("/eve-employee", eveEmployeeRouter);
   app.use("/chat", chatRouter);
@@ -50,7 +65,7 @@ const initApp = (app, express) => {
     res.status(404).send("Invalid Routing. Please check URL or method.");
   });
 
-  // ✅ Global Error Handler
+  // ✅ Global Error Handling
   app.use(globalErrorHandling);
 };
 
