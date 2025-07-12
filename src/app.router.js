@@ -10,8 +10,6 @@ const initApp = (app, express) => {
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "https://eve-frontend-eta.vercel.app"
-    // أضف أي دومين خارجي هنا لما ترفعه على سيرفر حقيقي
-    // "https://example.com",
   ];
 
   const corsOptions = {
