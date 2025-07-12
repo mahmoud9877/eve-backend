@@ -12,6 +12,7 @@ dotenv.config({ path: path.join(__dirname, "./config/.env") });
 
 const app = express();
 
+
 const uploadsDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir);
